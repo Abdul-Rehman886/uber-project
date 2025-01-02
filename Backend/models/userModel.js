@@ -21,9 +21,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     minlength: [5, "Email must be at least 5 characters long "],
+    lowercase: true,
+    match: [/\S+@\S+\.\S+/, "Please enter a valid email address"],
   },
   password: { type: String, required: true, select: false },
-  socketId: { type: String, required: true },
+  // socketId: { type: String, required: true },
 });
 
 userSchema.methods.generateAuthToken = function () {

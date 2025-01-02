@@ -44,3 +44,30 @@ The request body should be a JSON object with the following fields:
 - `email` (string, required): The email address of the user. Must be a valid email format and at least 5 characters long.
 - `password` (string, required): The password for the user. Must be at least 6 characters long.
 - `token` (string): JWT Token for the user.
+
+## Endpoints
+
+### GET /users/profile
+
+#### Description
+Retrieves the profile information of the authenticated user.
+
+#### Authentication
+- `Authorization`: Bearer token required (JWT token received after login)
+
+#### Example Request
+- `user` (object): 
+- `fullname` (object):
+- `firstname` (string, required): The first name of the user. Must be at least 3 characters long.
+- `lastname` (string, optional): The last name of the user. Must be at least 3 characters long if provided.
+- `email` (string, required): The email address of the user. Must be a valid email format and at least 5 characters long.
+
+## Endpoints
+
+### GET /users/logout
+
+#### Description
+Logout the current user and blacklist the token provided in headers or cookies.
+
+#### Authentication
+Requires a valid  JWT token in the Authorization header or cookie.

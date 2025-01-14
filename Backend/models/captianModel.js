@@ -7,41 +7,50 @@ const captainSchema = new mongoose.Schema({
     firstname: {
       type: String,
       required: true,
-      minlength: [3, "First Name must be at least 3 characters long "],
+      minlength: [3, "Firstname must be at least 3 characters long"],
     },
-
     lastname: {
       type: String,
-
-      minlength: [3, "Last Name must be at least 3 characters long "],
+      minlength: [3, "Lastname must be at least 3 characters long"],
     },
   },
   email: {
     type: String,
     required: true,
     unique: true,
-    minlength: [5, "Email must be at least 5 characters long "],
     lowercase: true,
-    match: [/\S+@\S+\.\S+/, "Please enter a valid email address"],
+    match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
   },
-  password: { type: String, required: true, select: false },
-  // socketId: { type: String, required: true },
-  status: { type: String, enum: ["active", "inactive"], default: "inactive" },
+  password: {
+    type: String,
+    required: true,
+    select: false,
+  },
+  socketId: {
+    type: String,
+  },
+
+  status: {
+    type: String,
+    enum: ["active", "inactive"],
+    default: "inactive",
+  },
+
   vehicle: {
     color: {
       type: String,
       required: true,
-      minlength: [3, "Color must be at least 3 characters long "],
+      minlength: [3, "Color must be at least 3 characters long"],
     },
     plate: {
       type: String,
       required: true,
-      minlength: [3, "Plate must be at least 3 characters long "],
+      minlength: [3, "Plate must be at least 3 characters long"],
     },
     capacity: {
-      type: String,
+      type: Number,
       required: true,
-      minlength: [1, "Capacity must be at least 1 "],
+      min: [1, "Capacity must be at least 1"],
     },
     vehicleType: {
       type: String,
@@ -51,8 +60,12 @@ const captainSchema = new mongoose.Schema({
   },
 
   location: {
-    lat: { type: Number },
-    lng: { type: Number },
+    ltd: {
+      type: Number,
+    },
+    lng: {
+      type: Number,
+    },
   },
 });
 
@@ -60,7 +73,6 @@ captainSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "24h",
   });
-
   return token;
 };
 

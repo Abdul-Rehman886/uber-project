@@ -1,19 +1,20 @@
 const captainModel = require("../models/captianModel");
 const captainService = require("../services/captainService");
+const blackListTokenModel = require("../models/blacklistTokenModel");
 const { validationResult } = require("express-validator");
-const blacklistTokenModel = require("../models/blacklistTokenModel");
+
 module.exports.registerCaptain = async (req, res, next) => {
-  const errors = await validationResult(req);
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
   const { fullname, email, password, vehicle } = req.body;
 
-  const isCaptain = await captainModel.findOne({ email });
+  const isCaptainAlreadyExist = await captainModel.findOne({ email });
 
-  if (isCaptain) {
-    return res.status(409).json({ message: "Captain already exists" });
+  if (isCaptainAlreadyExist) {
+    return res.status(400).json({ message: "Captain already exist" });
   }
 
   const hashedPassword = await captainModel.hashPassword(password);
@@ -31,11 +32,11 @@ module.exports.registerCaptain = async (req, res, next) => {
 
   const token = captain.generateAuthToken();
 
-  res.status(201).json({ captain, token });
+  res.status(201).json({ token, captain });
 };
 
 module.exports.loginCaptain = async (req, res, next) => {
-  const errors = await validationResult(req);
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -58,16 +59,19 @@ module.exports.loginCaptain = async (req, res, next) => {
 
   res.cookie("token", token);
 
-  res.status(200).json({ captain, token });
+  res.status(200).json({ token, captain });
 };
 
 module.exports.getCaptainProfile = async (req, res, next) => {
-  res.status(200).json(req.captain);
+  res.status(200).json({ captain: req.captain });
 };
 
 module.exports.logoutCaptain = async (req, res, next) => {
-  res.clearCookie("token");
   const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
-  await blacklistTokenModel.create({ token });
-  res.status(200).json({ message: "Logged out successfully" });
+
+  await blackListTokenModel.create({ token });
+
+  res.clearCookie("token");
+
+  res.status(200).json({ message: "Logout successfully" });
 };

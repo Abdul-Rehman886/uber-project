@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext } from "react";
 
 export const CaptainDataContext = createContext();
 
@@ -22,11 +22,9 @@ const CaptainContext = ({ children }) => {
   };
 
   return (
-    <>
-      <CaptainDataContext.Provider value={value}>
-        {children}
-      </CaptainDataContext.Provider>
-    </>
+    <CaptainDataContext.Provider value={value}>
+      {children}
+    </CaptainDataContext.Provider>
   );
 };
 
